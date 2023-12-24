@@ -4,57 +4,66 @@ const { Client, LocalAuth } = require("whatsapp-web.js");
 const client = new Client({
   authStrategy: new LocalAuth(),
 });
-// const ffmpeg = require("fluent-ffmpeg");
-// const ffmpegStaticPath = require("ffmpeg-static");
 
-// ffmpeg.setFfmpegPath(ffmpegStaticPath);
+const ffmpegPath = "C:\\ffmpeg\\bin";
+process.env.PATH += `;${ffmpegPath}`;
 
 client.on("qr", (qr) => {
   qrcode.generate(qr, { small: true });
 });
 
 client.on("ready", () => {
+  // console.log(process.env.PATH);
   console.log("Client is ready!");
 });
 
 client.on("message", async (message) => {
   try {
     if (
-      ["video", "gif", "audio", "voice", "document", "location", ""].includes(
+      ["audio", "voice", "document", "location", "text"].includes(
         message.type
       ) &&
       [".sticker", "!sticker", "!stiker", ".stiker", "/stiker"].includes(
         message.body
       )
     ) {
-      message.reply("Cuma bisa foto 🙏😁\nVideo & Gif `Coming Soon`");
+      message.reply("Cuma bisa Foto, Video & Gif aja 🙏😁");
     } else if (
-      ["image"].includes(message.type) &&
+      ["image", "video", "gif"].includes(message.type) &&
       [".sticker", "!sticker", "!stiker", ".stiker", "/stiker"].includes(
         message.body
       )
     ) {
       const media = await message.downloadMedia();
 
-      // if (message.type === "video" && message.type === "gif") {
-      //   const videoDuration = parseFloat(message.duration);
-      //   if (isNaN(videoDuration) || videoDuration >= 0) {
-      //     message.reply("Gabisa dulu lur");
-      //     return;
-      //   }
-      // }
+      if (
+        (message.type === "video" || message.type === "gif") &&
+        message.duration
+      ) {
+        const videoDuration = parseFloat(message.duration);
 
-      message.reply(
-        media,
-        undefined, // caption (optional)
-        {
-          sendMediaAsSticker: true,
-          stickerName: "ㅤ",
-          stickerAuthor: "ㅤ",
+        // Check if the size property is available
+        if (message.size) {
+          const fileSizeInMB = message.size / (1024 * 1024);
+          if (fileSizeInMB >= 10) {
+            message.reply("Gede banget sizenya, maksimal 10MB");
+            return;
+          }
         }
-      );
+
+        if (isNaN(videoDuration) || videoDuration > 7) {
+          message.reply("Kepanjangan durasinya, maksimal 7 detik");
+          return;
+        }
+      }
+
+      message.reply(media, undefined, {
+        sendMediaAsSticker: true,
+        stickerName: "ㅤ",
+        stickerAuthor: "ㅤ",
+      });
     } else if (
-      ["image", "video"].includes(message.type) &&
+      ["image", "video", "gif"].includes(message.type) &&
       [
         ". stiker",
         ". sticker",
@@ -66,50 +75,26 @@ client.on("message", async (message) => {
       ].includes(message.body)
     ) {
       message.reply(
-        "Ngetiknya yang bener 😠,\npake `.stiker` atau `!stcker` coba."
+        "Ngetiknya yang bener 😠,\npake *.stiker* atau *!stiker* yah."
       );
     }
   } catch (error) {
     console.error("Error:", error);
-    message.reply("Maaf, ada kesalahan. Tolong jangan dibully.");
+    message.reply("Waduh ada error nih dari sistem, mohon bersabar ini ujian.");
   }
 });
 
-// Chat bales otomatis
 client.on("message", async (message) => {
   try {
-    if (["p", "P"].includes(message.body)) {
+    if ([".help", "!help"].includes(message.body)) {
       message.reply(
-        "Kamu nyari aku? 😨 \nKalo mau pake sticker commandnya `.stiker` atau `!stcker` ya 😁"
-      );
-    } else if ([".help", "!help"].includes(message.body)) {
-      message.reply(
-        "Command Img to Sticker:\n- .stiker\n- !stiker \n\nInfo:\nUntuk Video & Gif to Sticker Nanti ya, mohon ditunggu.."
+        "*Perintah:*\n # Buat Sticker (Img, Vid, Gif):\nㅤ- .stiker\nㅤ- !stiker \n\n"
       );
     }
   } catch (error) {
     console.error("Error:", error);
-    message.reply("Maaf, ada kesalahan. Tolong jangan dibully.");
+    message.reply("Waduh ada error nih dari sistem, mohon bersabar ini ujian.");
   }
 });
-
-// Mention everyone
-// client.on("message", async (msg) => {
-//   if (msg.body === "!everyone") {
-//     const chat = await msg.getChat();
-
-//     let text = "";
-//     let mentions = [];
-
-//     for (let participant of chat.participants) {
-//       const contact = await client.getContactById(participant.id._serialized);
-
-//       mentions.push(contact);
-//       text += `@${participant.id.user} `;
-//     }
-
-//     await chat.sendMessage(text, { mentions });
-//   }
-// });
 
 client.initialize();
