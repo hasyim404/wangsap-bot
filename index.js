@@ -88,7 +88,7 @@ client.on("message", async (message) => {
   try {
     if ([".help", "!help"].includes(message.body)) {
       message.reply(
-        "*Perintah:*\n # Buat Sticker (Img, Vid, Gif):\nㅤ- .stiker\nㅤ- !stiker \n\n"
+        "*Perintah:*\n # Buat Sticker (Img, Vid, Gif):\nㅤ- .stiker\nㅤ- !stiker \n\nPerintah unik lainnya coming soon~"
       );
     }
   } catch (error) {
