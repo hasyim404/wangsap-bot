@@ -63,23 +63,7 @@ async function processMessageQueue() {
   await delay(10000); // Mengubah delay menjadi 10 detik
 
   try {
-    if (
-      (message.body.toLowerCase() === ".kurni",
-      "kurni",
-      ".sticker",
-      ". stiker",
-      ". sticker",
-      "stiker",
-      "sticker",
-      "!stiker",
-      "! stiker",
-      "!sticker",
-      "! sticker")
-    ) {
-      message.reply(
-        "Ngetiknya yang bener 😠,\npake *.stiker* untuk mulai membuat stiker "
-      );
-    } else if (message.body.toLowerCase() === "p") {
+    if (message.body.toLowerCase() === "p") {
       message.reply(
         "Kamu nyari aku? 😨 Kalo mau buat sticker perintahnya .stiker disertai dengan gambar/video ya 😁"
       );
@@ -131,6 +115,22 @@ async function processMessageQueue() {
         stickerName: "ㅤ",
         stickerAuthor: "ㅤ",
       });
+    } else if (
+      (message.body.toLowerCase() === ".kurni",
+      "kurni",
+      ".sticker",
+      ". stiker",
+      ". sticker",
+      "stiker",
+      "sticker",
+      "!stiker",
+      "! stiker",
+      "!sticker",
+      "! sticker")
+    ) {
+      message.reply(
+        "Ngetiknya yang bener 😠,\npake *.stiker* untuk mulai membuat stiker "
+      );
     }
   } catch (error) {
     console.error("Error:", error);
