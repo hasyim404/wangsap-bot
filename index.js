@@ -7,7 +7,26 @@ const client = new Client({
 const ffmpegPath = "C:\\ffmpeg\\bin";
 process.env.PATH += `;${ffmpegPath}`;
 
-const keywords = ["p", ".help", ".stiker"]; // Daftar keyword yang akan direspon
+// Daftar keyword yang akan direspon
+const keywords = [
+  // Keyword bener
+  "p",
+  ".help",
+  ".stiker",
+  "hi",
+  // Keyword salah
+  ".kurni",
+  "kurni",
+  ".sticker",
+  ". stiker",
+  ". sticker",
+  "stiker",
+  "sticker",
+  "!stiker",
+  "! stiker",
+  "!sticker",
+  "! sticker",
+];
 
 const messageQueue = [];
 let isProcessing = false;
@@ -44,11 +63,42 @@ async function processMessageQueue() {
   await delay(10000); // Mengubah delay menjadi 10 detik
 
   try {
-    if (message.body.toLowerCase() === "p") {
-      message.reply("Kamu nyari aku? 😨 Kalo mau pake sticker commandnya .stiker atau !stcker ya 😁");
+    if (
+      (message.body.toLowerCase() === ".kurni",
+      "kurni",
+      ".sticker",
+      ". stiker",
+      ". sticker",
+      "stiker",
+      "sticker",
+      "!stiker",
+      "! stiker",
+      "!sticker",
+      "! sticker")
+    ) {
+      message.reply(
+        "Ngetiknya yang bener 😠,\npake *.stiker* untuk mulai membuat stiker "
+      );
+    } else if (message.body.toLowerCase() === "p") {
+      message.reply(
+        "Kamu nyari aku? 😨 Kalo mau buat sticker perintahnya .stiker disertai dengan gambar/video ya 😁"
+      );
     } else if (message.body.toLowerCase() === ".help") {
       message.reply(
-        "Command Img to Sticker:\n- .stiker\n- !stiker \n\nInfo:\nUntuk Video & Gif to Sticker Nanti ya, mohon ditunggu.."
+        `
+        *Daftar Perintah:*\n 
+          # Buat Sticker (Img, Vid, Gif):
+          \nㅤ- .stiker 
+          \n\n
+          # Tes bot:
+          \nㅤ- p
+          \nㅤ- hi
+          \n\n
+          # Bantuan:
+          \nㅤ- .help
+          \n\n
+          _Perintah unik lainnya menyusul..._
+          `
       );
     } else if (message.body.toLowerCase() === ".stiker") {
       message.reply("Membuat stiker...");
@@ -64,8 +114,8 @@ async function processMessageQueue() {
         // Periksa apakah properti size tersedia
         if (message.size) {
           const fileSizeInMB = message.size / (1024 * 1024);
-          if (fileSizeInMB >= 10) {
-            message.reply("Gede banget sizenya, maksimal 10MB");
+          if (fileSizeInMB >= 5) {
+            message.reply("Gede banget sizenya, maksimal 5MB");
             return;
           }
         }
