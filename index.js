@@ -69,29 +69,17 @@ async function processMessageQueue() {
       );
     } else if (message.body.toLowerCase() === ".help") {
       message.reply(
-        `
-        *Daftar Perintah:*\n 
-          # Buat Sticker (Img, Vid, Gif):
-          \nㅤ- .stiker 
-          \n\n
-          # Tes bot:
-          \nㅤ- p
-          \nㅤ- hi
-          \n\n
-          # Bantuan:
-          \nㅤ- .help
-          \n\n
-          _Perintah unik lainnya menyusul..._
-          `
+        "*Daftar Perintah:*\n # Buat Sticker (Img, Vid, Gif): \nㅤ- .stiker\n\n # Tes bot:\nㅤ- p\nㅤ- hi\n\n # Bantuan:\nㅤ- .help\n\n_Perintah unik coming soon~_"
       );
     } else if (message.body.toLowerCase() === ".stiker") {
       message.reply("Membuat stiker...");
+
       // Logika untuk membuat stiker
       const media = await message.downloadMedia();
 
       if (
-        (message.type === "video" || message.type === "gif") &&
-        message.duration
+        message.type === "video" ||
+        (message.type === "gif" && message.duration)
       ) {
         const videoDuration = parseFloat(message.duration);
 
@@ -112,8 +100,8 @@ async function processMessageQueue() {
 
       message.reply(media, undefined, {
         sendMediaAsSticker: true,
-        stickerName: "ㅤ",
-        stickerAuthor: "ㅤ",
+        stickerName: "",
+        stickerAuthor: "",
       });
     } else if (
       (message.body.toLowerCase() === ".kurni",
@@ -129,7 +117,7 @@ async function processMessageQueue() {
       "! sticker")
     ) {
       message.reply(
-        "Ngetiknya yang bener 😠,\npake *.stiker* untuk mulai membuat stiker "
+        "Ngetiknya yang bener 😠,ketik *.stiker + masukin gambar/video* untuk mulai membuat stiker "
       );
     }
   } catch (error) {
