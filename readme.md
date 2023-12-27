@@ -15,7 +15,7 @@ This is a simple WhatsApp bot built using the `whatsapp-web.js` library.
 
 ## Usage
 
-Send a "!everyone" message in a chat where the bot is a participant to have the bot mention all participants.
+~~Send a "!everyone" message in a chat where the bot is a participant to have the bot mention all participants.~~
 
 Send a ".stickers" message to create stickers
 
