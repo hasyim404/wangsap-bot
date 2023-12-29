@@ -72,7 +72,7 @@ client.on("message", async (message) => {
       );
     } else if ([".stiker", "!stiker"].includes(body)) {
       await delay(timeer);
-      message.reply("Tambahkan media untuk dijadikan stiker");
+      message.reply("Tambahkan media berupa Gambar/Video/GIF untuk dijadikan stiker 😅");
     } else if (["p", "hi"].includes(body)) {
       await delay(timeer);
       message.reply(
