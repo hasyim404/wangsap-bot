@@ -4,20 +4,26 @@ This is a simple WhatsApp bot built using the `whatsapp-web.js` library.
 
 ## Features
 
-- Responds to a "!everyone" command by mentioning all participants in a chat.
+<!-- - Responds to a "!everyone" command by mentioning all participants in a chat. -->
+
 - Create stickers from "Image", "Video", and "Gif"
 
 ## Setup
 
 1. Clone this repository.
 2. Run `npm install` to install the required dependencies.
-3. Run `node index.js` to start the bot.
+3. Install [FFMPEG](https://ffmpeg.org/download.html) on local and declare the path in `index.js`
+4. Run `node index.js` to start the bot.
 
 ## Usage
 
-Send a "!everyone" message in a chat where the bot is a participant to have the bot mention all participants.
+<!-- Send a "!everyone" message in a chat where the bot is a participant to have the bot mention all participants. -->
 
-Send a ".stickers" message to create stickers
+Send a ".help" for see available command list
+
+Send a ".stiker" message to create stickers
+
+Send a "p" message for test bot running or no
 
 ## Contributing
 
