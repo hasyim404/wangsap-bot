@@ -2,6 +2,7 @@ const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const ffmpeg = require('ffmpeg-static');
 const sharp = require('sharp');
+const fs = require('fs');
 
 const client = new Client({
   authStrategy: new LocalAuth(),
@@ -124,25 +125,38 @@ async function processMessageQueue() {
       //   await delay(timeer);
       //   break;
 
-        case [""].includes(body):
-          if (message.type === "sticker" && !message.body)
-            await delay(timeer);
-            message.reply("Mengubah stiker menjadi gif...");
-            await delay(timeer);
-            if (message.type === "sticker") {
-              const stickerMedia = await message.downloadMedia();
-              // console.log(stickerMedia)
-              const gifBuffer = await convertWebpToGif(stickerMedia.data);
-              // console.log(gifBuffer)
-              const gifMedia = new MessageMedia('image/gif', gifBuffer);
-              // console.log(gifMedia)
-              message.reply(gifMedia, undefined, {
-                caption: "Inilah gif dari stiker!",
-              });
-            } else {
-              message.reply("Stiker yang di-reply bukan stiker gif.");
-            }
-            await delay(timeer);
+      // TEST CASE FOR .GIF COMMAND
+      case [""].includes(body):
+        if (message.type === "sticker" && !message.body)
+          await delay(timeer);
+          message.reply("Mengubah stiker menjadi gif...");
+          await delay(timeer);
+          if (message.type === "sticker") {
+            const stickerMedia = await message.downloadMedia();
+            // Test 1 - Convert webp base64 to gif base64 with converter
+            // const gifBuffer = await convertWebpToGif(stickerMedia.data);
+            // const gifMedia = new MessageMedia('image/gif', gifBuffer);
+              
+            // Test 2 - Convert webp base64 to gif base64 without converter, then write output.gif file from gif base64
+            const buffer = Buffer.from(stickerMedia.data, 'base64')
+            fs.writeFileSync('output.gif', buffer, 'binary');
+            const gifMedia = MessageMedia.fromFilePath('output.gif');
+
+            // Test 3 - Convert webp base64 to gif base64 withut converter
+            // const gifMedia = new MessageMedia('image/gif', stickerMedia.data, 'sticker');
+
+            // Test 4 - Send gif file
+            // const gifMedia = await MessageMedia.fromUrl('https://media1.tenor.com/m/omJbisofB98AAAAC/pepe-clown.gif');
+
+            message.reply(gifMedia, undefined, {
+              caption: "Inilah gif dari stiker!",
+              sendMediaAsDocument: true
+            });
+            fs.unlinkSync('output.gif');
+          } else {
+            message.reply("Stiker yang di-reply bukan stiker gif.");
+          }
+          await delay(timeer);
           break;
       
       default:
