@@ -1,7 +1,7 @@
 const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const ffmpeg = require('ffmpeg-static');
-const Jimp = require('jimp');
+const sharp = require('sharp');
 
 const client = new Client({
   authStrategy: new LocalAuth(),
@@ -203,11 +203,8 @@ const convertWebpToGif = async (webpData) => {
     // Decode base64 WebP data
     const buffer = Buffer.from(webpData, 'base64');
 
-    // Read WebP image with Jimp
-    const image = await Jimp.read(buffer);
-
-    // Convert WebP to GIF
-    const gifBuffer = await image.getBufferAsync(Jimp.MIME_GIF);
+    // Convert WebP to GIF using sharp
+    const gifBuffer = await sharp(buffer).toFormat('gif').toBuffer();
 
     // Encode GIF buffer to base64
     const gifData = gifBuffer.toString('base64');
