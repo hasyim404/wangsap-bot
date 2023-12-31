@@ -1,18 +1,18 @@
+const { Client, LocalAuth, MessageMedia } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
-const { Client, LocalAuth } = require("whatsapp-web.js");
+const ffmpeg = require('ffmpeg-static');
+const Jimp = require('jimp');
+
 const client = new Client({
   authStrategy: new LocalAuth(),
+  ffmpegPath: ffmpeg,
+  puppeteer: {executablePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',}
 });
-
-const ffmpegPath = "C:\\ffmpeg\\bin";
-process.env.PATH += `${ffmpegPath}`;
-
-const fs = require("fs");
 
 const messageQueue = [];
 let isProcessingQueue = false;
 
-const timeer = 10000;
+const timeer = 1000;
 
 client.on("qr", (qr) => {
   qrcode.generate(qr, { small: true });
@@ -40,7 +40,6 @@ client.on("message", async (message) => {
 
 client.initialize();
 
-// Fungsi kueue
 async function processMessageQueue() {
   isProcessingQueue = true;
 
@@ -49,49 +48,72 @@ async function processMessageQueue() {
 
     const body = message.body.toLowerCase();
 
-    if ([".help", "!help"].includes(body)) {
-      await delay(timeer);
-      message.reply(
-        "*Note:*\nSetiap perintah mempunyai *delay ± 10detik*,\nharap *bersabar* dan *jangan sampai spam*\n-\n*Daftar Perintah:*\n # Buat Sticker (Img, Vid, Gif): \nㅤ- .stiker\n\n # Stiker ke Foto & Gif: \nㅤ- .foto | reply stikernya pake .foto _(beta)_ \nㅤ- .gif _(coming soon)_ \n\n # Tes bot:\nㅤ- p\nㅤ- hi \n\n # Bantuan:\nㅤ- .help\n\n_Bot masih dalam tahap pengembangan, dan untuk perintah unik lainnya coming soon~_"
-      );
-    } else if (
-      ["audio", "voice", "document", "location", "text"].includes(
-        message.type
-      ) &&
-      [".stiker"].includes(body)
-    ) {
-      await delay(timeer);
-      message.reply("Cuma bisa Gambar, Video dan GIF 👍");
-    } else if (
-      ["image", "video", "gif"].includes(message.type) &&
-      [".stiker"].includes(body)
-    ) {
-      await processStickerMessage(message);
-    } else if ([".foto"].includes(body) && message.hasQuotedMsg) {
-      await delay(timeer);
-      message.reply("Memproses stiker menjadi foto...");
-      await delay(timeer);
-      const quotedMessage = await message.getQuotedMessage();
-      if (quotedMessage.type === "sticker") {
-        const stickerMedia = await quotedMessage.downloadMedia();
-        message.reply(stickerMedia, undefined, {
-          caption: "Oke",
-        });
-      }
-      await delay(timeer);
-      continue;
+    switch (true) {
+      case ["p", "hi"].includes(body):
+        await delay(timeer);
+        message.reply(
+          "Kamu nyari aku 😨\nKalo mau buat stiker perintahnya .stiker disertai dengan gambar/video ya 😁"
+        );
+        break;
 
-      // } else if ([".gif"].includes(body) && message.hasQuotedMsg) {
+      case [".help", "!help"].includes(body):
+        await delay(timeer);
+        message.reply(
+          "*Note:*\n" +
+          "Setiap perintah mempunyai *delay ± 10detik*,\n" +
+          "harap *bersabar* dan *jangan sampai spam*\n\n" +
+          "*Daftar Perintah:*\n" +
+          " # Buat Sticker (Img, Vid, Gif): \n - .stiker\n\n" +
+          " # Stiker ke Foto & Gif: \n - .foto | reply stikernya pake .foto _(beta)_ \n - .gif _(coming soon)_ \n\n" +
+          " # Tes bot:\n - p\n - hi \n\n" +
+          " # Bantuan:\n - .help\n\n" +
+          "_Bot masih dalam tahap pengembangan, dan untuk perintah unik lainnya coming soon~_"
+        );
+        break;
+
+      case [".kurni", "kurni", ".sticker", ". stiker", ". sticker", "stiker", "stiiker", "sticker", "!stiker", "! stiker", "!sticker", "! sticker"].includes(body):
+        await delay(timeer);
+        message.reply(
+          "Ngetiknya yang bener 😠\nketik *.stiker + masukin gambar/video* untuk mulai membuat stiker"
+        );
+        break;
+
+      case [".stiker"].includes(body) && ["image", "video", "gif"].includes(message.type):
+        await processStickerMessage(message);
+        break;
+
+      case [".stiker"].includes(body) && ["audio", "voice", "document", "location", "text"].includes(message.type):
+        await delay(timeer);
+        message.reply("Cuma bisa Gambar, Video dan GIF 👍");
+        break;
+
+      case [".stiker"].includes(body):
+        await delay(timeer);
+        message.reply(
+          "Eitss, gambar/videonya ketinggalan nih..\n*ketik .stiker + masukin gambar/video* untuk mulai membuat stiker"
+        );
+        break;
+
+      case [".foto"].includes(body) && message.hasQuotedMsg:
+        await delay(timeer);
+        message.reply("Memproses stiker menjadi foto...");
+        await delay(timeer);
+        // const quotedMessage = await message.getQuotedMessage();
+        if (quotedMessage.type === "sticker") {
+          const stickerMedia = await quotedMessage.downloadMedia();
+          message.reply(stickerMedia, undefined, {
+            caption: "Oke",
+          });
+        }
+        await delay(timeer);
+        break;
+
+      // case [".gif"].includes(body) && message.hasQuotedMsg:
       //   await delay(timeer);
       //   message.reply("Mengubah stiker menjadi gif...");
       //   await delay(timeer);
       //   const quotedMessage = await message.getQuotedMessage();
-      //   if (
-      //     quotedMessage &&
-      //     quotedMessage.type === "sticker" &&
-      //     quotedMessage.mimetype &&
-      //     quotedMessage.mimetype.includes("image/gif")
-      //   ) {
+      //   if (quotedMessage.type === "sticker") {
       //     const stickerMedia = await quotedMessage.downloadMedia();
       //     message.reply(stickerMedia, undefined, {
       //       caption: "Inilah gif dari stiker!",
@@ -100,37 +122,31 @@ async function processMessageQueue() {
       //     message.reply("Stiker yang di-reply bukan stiker gif.");
       //   }
       //   await delay(timeer);
-      //   continue;
-    } else if (
-      [
-        ".kurni",
-        "kurni",
-        ".sticker",
-        ". stiker",
-        ". sticker",
-        "stiker",
-        "stiiker",
-        "sticker",
-        "!stiker",
-        "! stiker",
-        "!sticker",
-        "! sticker",
-      ].includes(body)
-    ) {
-      await delay(timeer);
-      message.reply(
-        "Ngetiknya yang bener 😠\nketik *.stiker + masukin gambar/video* untuk mulai membuat stiker"
-      );
-    } else if ([".stiker"].includes(body)) {
-      await delay(timeer);
-      message.reply(
-        "Eitss, gambar/videonya ketinggalan nih..\n*ketik .stiker + masukin gambar/video* untuk mulai membuat stiker"
-      );
-    } else if (["p", "hi"].includes(body)) {
-      await delay(timeer);
-      message.reply(
-        "Kamu nyari aku 😨\nKalo mau buat stiker perintahnya .stiker disertai dengan gambar/video ya 😁"
-      );
+      //   break;
+
+        case [""].includes(body):
+          if (message.type === "sticker" && !message.body)
+            await delay(timeer);
+            message.reply("Mengubah stiker menjadi gif...");
+            await delay(timeer);
+            if (message.type === "sticker") {
+              const stickerMedia = await message.downloadMedia();
+              // console.log(stickerMedia)
+              const gifBuffer = await convertWebpToGif(stickerMedia.data);
+              // console.log(gifBuffer)
+              const gifMedia = new MessageMedia('image/gif', gifBuffer);
+              // console.log(gifMedia)
+              message.reply(gifMedia, undefined, {
+                caption: "Inilah gif dari stiker!",
+              });
+            } else {
+              message.reply("Stiker yang di-reply bukan stiker gif.");
+            }
+            await delay(timeer);
+          break;
+      
+      default:
+        break;
     }
   }
 
@@ -138,7 +154,6 @@ async function processMessageQueue() {
   if (messageQueue.length > 0) {
     await processMessageQueue();
   }
-
   isProcessingQueue = false;
 }
 
@@ -152,7 +167,6 @@ async function processStickerMessage(message) {
   ) {
     const videoDuration = parseFloat(message.duration);
 
-    // Check if the size property is available
     if (message.size) {
       const fileSizeInMB = message.size / (1024 * 1024);
       if (fileSizeInMB >= 5) {
@@ -177,16 +191,34 @@ async function processStickerMessage(message) {
     stickerAuthor: "",
   });
 
-  // Delay 15 detik sebelum memproses pesan berikutnya
   await delay(timeer);
 
-  // Proses pesan berikutnya dalam antrian
   if (messageQueue.length > 0) {
     await processMessageQueue();
   }
 }
 
-// Fungsi delay
+const convertWebpToGif = async (webpData) => {
+  try {
+    // Decode base64 WebP data
+    const buffer = Buffer.from(webpData, 'base64');
+
+    // Read WebP image with Jimp
+    const image = await Jimp.read(buffer);
+
+    // Convert WebP to GIF
+    const gifBuffer = await image.getBufferAsync(Jimp.MIME_GIF);
+
+    // Encode GIF buffer to base64
+    const gifData = gifBuffer.toString('base64');
+
+    return gifData;
+  } catch (error) {
+    console.error('Error converting WebP to GIF:', error);
+    throw error;
+  }
+};
+
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
