@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "nodemon --exitcrash index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "cloudconvert": "^2.3.5",
+    "convertapi": "^1.13.0",
     "ffmpeg-static": "^5.2.0",
     "qrcode-terminal": "^0.12.0",
     "sharp": "^0.33.1",
