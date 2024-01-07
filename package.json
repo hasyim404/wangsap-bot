@@ -5,12 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node index.js"
+    "start": "nodemon --exitcrash index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^2.1.2",
+    "@img/sharp-win32-x64": "^0.33.1",
+    "ffmpeg-static": "^5.2.0",
+    "nodemon": "^3.0.2",
     "qrcode-terminal": "^0.12.0",
+    "sharp": "^0.33.1",
     "whatsapp-web.js": "^1.23.0"
   }
 }
