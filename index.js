@@ -9,19 +9,18 @@ const ffprobe = require("@ffprobe-installer/ffprobe");
 
 const osPlatform = require("os").platform(); // possible values are: 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
 console.log("Scraper running on platform: ", osPlatform);
-let executablePath;
+let execPath;
 if (/^win/i.test(osPlatform)) {
-  executablePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
+  execPath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 } else if (/^linux/i.test(osPlatform)) {
-  executablePath = "/usr/bin/chromium-browser";
+  execPath = "/usr/bin/chromium-browser";
 }
 
 const client = new Client({
   authStrategy: new LocalAuth(),
   ffmpegPath: ffmpegs,
   puppeteer: {
-    executablePath:
-      "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+    executablePath: execPath,
   },
 });
 
